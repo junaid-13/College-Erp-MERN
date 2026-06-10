@@ -1,5 +1,5 @@
 ---
-  name: Building-on-commit
+  name: Building-on-push
   on:
     push:
       branches: 
