@@ -2,7 +2,7 @@ name: Building-on-commit
 on:
   push:
     branches: 
-    - feat/**
+    - 'feat/**'
 
 jobs:
   code-checkout:
@@ -14,7 +14,7 @@ jobs:
         with:
           repository: ${{ github.repository }}
           ref: ${{ github.ref }}
-          show-progress: true // Show progress of the checkout action. Default true
+          show-progress: true  #Show progress of the checkout action. Default true
           token: ${{ secrets.GITHUB_TOKEN }} 
           lfs: false
       - name: Install node
