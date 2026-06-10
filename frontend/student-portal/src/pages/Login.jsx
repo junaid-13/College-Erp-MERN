@@ -60,7 +60,7 @@ export default function Login() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@college.edu"
+            placeholder="your@college.edu"
           />
           {errors.email && <span className="field-error">{errors.email}</span>}
         </label>
