@@ -1,0 +1,26 @@
+{
+  "name": "college-erp",
+  "version": "1.0.0",
+  "description": "College ERP - microservices monorepo (frontend, backend services, shared libraries, infrastructure)",
+  "private": true,
+  "workspaces": [
+    "frontend/*",
+    "backend/*",
+    "shared"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev --workspaces --if-present --verbose",
+    "build:frontend": "npm --workspace frontend/student-portal run build",
+    "start:gateway": "node backend/api-gateway/src/server.js",
+    "pm2:start": "pm2 start infrastructure/pm2/ecosystem.config.js",
+    "pm2:stop": "pm2 stop infrastructure/pm2/ecosystem.config.js",
+    "pm2:logs": "pm2 logs"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "pm2": "^7.0.1"
+  }
+}
