@@ -1,6 +1,6 @@
 name: Building-on-commit
 on:
-  commit:
+  push:
     branches: 
     - feat/*
 
