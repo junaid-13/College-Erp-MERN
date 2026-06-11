@@ -53,7 +53,9 @@ export default defineConfig([
     extends: ["js/recommended"],
     settings: {
       // Let eslint-plugin-import resolve Node-style paths for import/order grouping.
-      "import/resolver": { node: { extensions: [".js", ".mjs", ".cjs", ".jsx"] } },
+      "import/resolver": {
+        node: { extensions: [".js", ".mjs", ".cjs", ".jsx"] },
+      },
     },
     rules: {
       // === (1) CODE SMELLS — SonarJS + Unicorn bug/smell detectors ============
@@ -73,19 +75,25 @@ export default defineConfig([
       "unicorn/throw-new-error": "error", // always `throw new Error()`, never `throw Error()`
 
       // === (2) MAINTAINABILITY — size/shape limits keep units reviewable ======
-      "max-lines": ["warn", { max: 400, skipBlankLines: true, skipComments: true }], // huge files resist change
-      "max-lines-per-function": ["warn", { max: 80, skipBlankLines: true, skipComments: true }], // long fns hide bugs
+      "max-lines": [
+        "warn",
+        { max: 400, skipBlankLines: true, skipComments: true },
+      ], // huge files resist change
+      "max-lines-per-function": [
+        "warn",
+        { max: 80, skipBlankLines: true, skipComments: true },
+      ], // long fns hide bugs
       "max-params": ["warn", 4], // >4 params -> pass an options object instead
       "max-statements": ["warn", 25], // too many statements in one fn = doing too much
       "no-nested-ternary": "warn", // stacked `?:` is hard to read
       "no-else-return": "warn", // `else` after `return` is dead structure
       "prefer-const": "error", // never `let` a value that is never reassigned
       "no-var": "error", // `var` is hoisting/scoping footgun; use let/const
-      "eqeqeq": ["error", "smart"], // `==` does surprising coercion; require `===`
+      eqeqeq: ["error", "smart"], // `==` does surprising coercion; require `===`
 
       // === (3) COGNITIVE COMPLEXITY ==========================================
       "sonarjs/cognitive-complexity": ["warn", 15], // SonarJS metric: weighted nesting+branching effort to read
-      "complexity": ["warn", 12], // classic cyclomatic complexity (independent paths) ceiling
+      complexity: ["warn", 12], // classic cyclomatic complexity (independent paths) ceiling
 
       // === (4) NESTING DEPTH =================================================
       "max-depth": ["warn", 4], // blocks nested deeper than 4 -> extract a function
@@ -100,7 +108,14 @@ export default defineConfig([
         "warn",
         {
           // builtin (node:fs) -> external (express) -> internal (../utils) ...
-          groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
+          groups: [
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+          ],
           "newlines-between": "always", // blank line between groups for scanability
           alphabetize: { order: "asc", caseInsensitive: true },
         },
