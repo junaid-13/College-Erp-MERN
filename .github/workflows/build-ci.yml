@@ -39,7 +39,8 @@ jobs:
       - name: Commit formatting changes
         if: steps.fix-prettier.outcome == 'success'
         env:
-          PAT_TOKEN: ${{ secrets.MERN_ERP_TOKEN }}
+          GIT_USER: ${{ github.actor }}
+          GIT_EMAIL: ${{ secrets.GIT_MAIL}}
         run: |
           git add .
           git commit -m "style: apply prettier formatting" || echo "No changes to commit"
