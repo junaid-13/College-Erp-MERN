@@ -1,55 +1,105 @@
----
 name: Building-on-push
+
 on:
   push:
     branches:
       - "feat/**"
 
 jobs:
-  code-checkout:
+  format:
     runs-on: ubuntu-latest
+
+    outputs:
+      formatted: ${{ steps.prettier.outcome == 'failure' }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          repository: ${{ github.repository }}
-          ref: ${{ github.ref }}
-          show-progress: true #Show progress of the checkout action. Default true
-          lfs: false
-      - name: Install node
+          token: ${{ secrets.MERN_ERP_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: "20"
-          cache: "npm"
-      - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit --no-fund
-      - name: Security audit
-        run: npm audit --omit=dev --audit-level=high
-      - name: Lint code
-        run: npm run lint
+
       - name: Check formatting
         id: prettier
         continue-on-error: true
         run: npx prettier --check .
+
       - name: Fix formatting
-        id: fix-prettier
         if: steps.prettier.outcome == 'failure'
         run: npx prettier --write .
+
       - name: Commit formatting changes
-        if: steps.fix-prettier.outcome == 'success'
+        if: steps.prettier.outcome == 'failure'
         env:
           GIT_USER: ${{ github.actor }}
-          GIT_EMAIL: ${{ secrets.GIT_MAIL}}
+          GIT_EMAIL: ${{ secrets.GIT_MAIL }}
         run: |
           git config user.name "$GIT_USER"
           git config user.email "$GIT_EMAIL"
+
           git add .
-          git commit -m "style: apply prettier formatting" || echo "No changes to commit"
-      - name: Debug remote URL
-        run: git remote -v
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "style: apply prettier formatting [skip ci]"
+
       - name: Push formatting changes
-        env:
-          PAT_TOKEN: ${{ secrets.MERN_ERP_TOKEN }}
-        if: steps.fix-prettier.outcome == 'success'
-        run: git push origin HEAD:${{ github.ref_name }}
+        if: steps.prettier.outcome == 'failure'
+        run: |
+          git push origin HEAD:${{ github.ref_name }}
+
+  quality:
+    needs: format
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.MERN_ERP_TOKEN }}
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit --no-fund
+
+      - name: Security audit
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Lint code
+        run: npm run lint
+
+  build:
+    needs: quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.MERN_ERP_TOKEN }}
+          ref: ${{ github.ref_name }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit --no-fund
+
