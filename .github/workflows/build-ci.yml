@@ -1,28 +1,37 @@
 ---
-  name: Building-on-push
-  on:
-    push:
-      branches: 
-      - 'feat/**'
-  
-  jobs:
-    code-checkout:
-      runs-on: ubuntu-latest
-  
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v6
-          with:
-            repository: ${{ github.repository }}
-            ref: ${{ github.ref }}
-            show-progress: true  #Show progress of the checkout action. Default true
-            lfs: false
-        - name: Install node
-          uses: actions/setup-node@v6
-          with:
-            node-version: '20'
-            cache: 'npm'
-        - name: Install dependencies
-          run: npm ci --prefer-offline --no-audit --no-fund
-        - name: Security audit
-          run: npm audit --omit=dev --audit-level=high
+name: Building-on-push
+on:
+  push:
+    branches:
+      - "feat/**"
+
+jobs:
+  code-checkout:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ github.ref }}
+          show-progress: true #Show progress of the checkout action. Default true
+          lfs: false
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          cache: "npm"
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit --no-fund
+      - name: Security audit
+        run: npm audit --omit=dev --audit-level=high
+      - name: Lint code
+        run: npm run lint
+      - name: Check formatting
+        id: prettier
+        continue-on-error: true
+        run: npx prettier --check .
+      - name: Fix formatting
+        if: steps.prettier.outcome == 'failure'
+        run: npx prettier --write .
