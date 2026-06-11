@@ -38,6 +38,8 @@ jobs:
         run: npx prettier --write .
       - name: Commit formatting changes
         if: steps.fix-prettier.outcome == 'success'
+        env:
+          PAT_TOKEN: ${{ secrets.MERN_ERP_TOKEN }}
         run: |
           git add .
           git commit -m "style: apply prettier formatting" || echo "No changes to commit"
