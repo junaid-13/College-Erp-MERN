@@ -39,11 +39,12 @@ jobs:
       - name: Commit formatting changes
         if: steps.fix-prettier.outcome == 'success'
         run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
           git add .
           git commit -m "style: apply prettier formatting" || echo "No changes to commit"
-      
+      - name: Debug remote URL
+        run: git remote -v
       - name: Push formatting changes
+        env:
+          PAT_TOKEN: ${{ secrets.MERN_ERP_TOKEN }}
         if: steps.fix-prettier.outcome == 'success'
         run: git push origin HEAD:${{ github.ref_name }}
