@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.example
+
+# Build output
+dist/
+build/
+coverage/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pm2.log
+.pm2/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Misc
+*.pem
+.cache/
+tmp/
+
+# Tests
+frontend/*/tests/
+backend/*/tests/
+
+docs/README.md
+README.md

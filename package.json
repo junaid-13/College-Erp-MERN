@@ -1,0 +1,37 @@
+{
+  "name": "college-erp",
+  "version": "1.0.0",
+  "description": "College ERP - microservices monorepo (frontend, backend services, shared libraries, infrastructure)",
+  "private": true,
+  "workspaces": [
+    "frontend/*",
+    "backend/*",
+    "shared"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev --workspaces --if-present --verbose",
+    "build:frontend": "npm --workspace frontend/student-portal run build",
+    "start:gateway": "node backend/api-gateway/src/server.js",
+    "pm2:start": "pm2 start infrastructure/pm2/ecosystem.config.js",
+    "pm2:stop": "pm2 stop infrastructure/pm2/ecosystem.config.js",
+    "pm2:logs": "pm2 logs",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "eslint": "^9.7.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-promise": "^7.3.0",
+    "eslint-plugin-sonarjs": "^4.0.3",
+    "eslint-plugin-unicorn": "^65.0.1",
+    "pm2": "^7.0.1"
+  },
+  "devDependencies": {
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1"
+  }
+}
