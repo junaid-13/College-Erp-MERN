@@ -2,7 +2,26 @@ FROM node:20-slim AS base
 
 WORKDIR /student-portal
 
-COPY package.json /student-portal/
+COPY package.json  package-lock.json /student-portal/
 
-RUN npm install -D
+COPY frontend/student-portal/index.html  frontend/student-portal/package.json frontend/student-portal/vite.config.js frontend/student-portal/public/ frontend/student-portal/src/ frontend/student-portal/
 
+RUN npm ci --workspaces=frontend/student-portal 
+
+RUN cd frontend/student-portal && npm run build
+
+FROM node:20-slim
+
+WORKDIR /student-portal
+
+COPY package.json  package-lock.json /student-portal/
+
+COPY --from=base frontend/student-portal/ /student-portal/
+
+RUN npm ci --workspaces=frontend/student-portal --omit=dev
+
+#COPY --from=base student-portal/dist /student-portal/dist
+
+EXPOSE 5173
+
+CMD ["node", "dist/server.js"]
