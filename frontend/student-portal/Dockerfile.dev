@@ -12,19 +12,13 @@ COPY frontend/student-portal/ /student-portal/frontend/student-portal/
 
 RUN npm run build --workspace frontend/student-portal
 
-FROM node:20-alpine
+FROM gcr.io/distroless/nodejs20-debian12
 
 WORKDIR /app
 
-# Built static assets + the zero-dependency node server.
 COPY --from=base /student-portal/frontend/student-portal/dist ./dist
 COPY --from=base /student-portal/frontend/student-portal/server.mjs ./server.mjs
 
-# Drop npm/npx to shrink the image well under 100MB (not needed at runtime).
-RUN rm -rf /usr/local/lib/node_modules/npm \
-           /usr/local/bin/npm \
-           /usr/local/bin/npx
-
 EXPOSE 5173
 
-CMD ["node", "server.mjs"]
+CMD ["server.mjs"]
