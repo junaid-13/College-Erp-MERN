@@ -50,7 +50,7 @@ jobs:
             exit 0
           fi
 
-          git commit -m "style: apply prettier formatting"
+          git commit -m "style: apply prettier formatting on{{ github.ref_name }}"
 
       - name: Push formatting changes
         if: steps.prettier.outcome == 'failure'
