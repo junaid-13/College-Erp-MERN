@@ -1,10 +1,10 @@
 // Minimal zero-dependency static file server for the built Vite SPA.
 // Serves files from ./dist and falls back to index.html for client-side routes.
-import { createServer } from "node:http";
+import console from "node:console";
 import { readFile, stat } from "node:fs/promises";
+import { createServer } from "node:http";
 import { join, normalize, extname } from "node:path";
 import process from "node:process";
-import console from "node:console";
 
 const ROOT = join(process.cwd(), "dist");
 const PORT = process.env.PORT || 5173;
