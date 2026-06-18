@@ -31,15 +31,20 @@ jobs:
                 name: eslint-report${{ github.workflow_sha}}
                 path: eslint-report${{ github.workflow }}
             
-            - name: Checking for eslint problems
-              id: eslint_check
+            - name: Run ESLint
               run: |
-                ERROR_COUNT=$(jq '[.[].errorCount] | add' eslint-report.json
-                WARNING_COUNT=$(jq '[.[].warningCount] | add' eslint-report.json
-
-                echo "errors=$ERROR_COUNT" >> $GITHUB_OUTPUT
-                echo "warnings=$WARNING_COUNT" >> $GITHUB_OUTPUT
-
-                if [ "$ERROR_COUNT" -gt 0 ] || [ "$WARNING_COUNT" -gt 0 ]; then
-                  exit 1
-                fi
+                  npx eslint . -f html -o eslint-report.html
+                  npx eslint . -f json -o eslint-report.json
+              
+                  ERROR_COUNT=$(jq '[.[].errorCount] | add' eslint-report.json)
+                  WARNING_COUNT=$(jq '[.[].warningCount] | add' eslint-report.json)
+              
+                  echo "Errors: $ERROR_COUNT"
+                  echo "Warnings: $WARNING_COUNT"
+              
+                  echo "errors=$ERROR_COUNT" >> $GITHUB_OUTPUT
+                  echo "warnings=$WARNING_COUNT" >> $GITHUB_OUTPUT
+              
+                  if [ "$ERROR_COUNT" -gt 0 ] || [ "$WARNING_COUNT" -gt 0 ]; then
+                    exit 1
+                  fi
