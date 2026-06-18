@@ -38,7 +38,7 @@ jobs:
                 WARNING_COUNT=$(jq '[.[].warningCount] | add' eslint-report.json
 
                 echo "errors=$ERROR_COUNT" >> $GITHUB_OUTPUT
-                echo "warnings=$WARNNING_COUNT" >> $GITHUB_OUTPUT
+                echo "warnings=$WARNING_COUNT" >> $GITHUB_OUTPUT
 
                 if [ "$ERROR_COUNT" -gt 0 ] || [ "$WARNING_COUNT" -gt 0 ]; then
                   exit 1
