@@ -9,13 +9,7 @@ const LEAVE_TYPES = ["CASUAL", "MEDICAL", "EARNED", "ON_DUTY", "OTHER"];
  * Apply for leave (Task 10.22). Shared between student & faculty portals.
  */
 
-function LeaveFormFields({
-  form,
-  errors,
-  days,
-  set,
-  setFile,
-}) {
+function LeaveFormFields({ form, errors, days, set, setFile }) {
   return (
     <fieldset>
       <legend>Leave Details</legend>
@@ -30,7 +24,6 @@ function LeaveFormFields({
             <option key={t}>{t}</option>
           ))}
         </select>
-
         {errors.leaveType && (
           <span className="field-error">{errors.leaveType}</span>
         )}
@@ -43,7 +36,6 @@ function LeaveFormFields({
           value={form.fromDate}
           onChange={(e) => set("fromDate", e.target.value)}
         />
-
         {errors.fromDate && (
           <span className="field-error">{errors.fromDate}</span>
         )}
@@ -56,10 +48,7 @@ function LeaveFormFields({
           value={form.toDate}
           onChange={(e) => set("toDate", e.target.value)}
         />
-
-        {errors.toDate && (
-          <span className="field-error">{errors.toDate}</span>
-        )}
+        {errors.toDate && <span className="field-error">{errors.toDate}</span>}
       </label>
 
       <label>
@@ -69,21 +58,16 @@ function LeaveFormFields({
 
       <label style={{ gridColumn: "1 / -1" }}>
         Reason
-
         <textarea
           rows="2"
           value={form.reason}
           onChange={(e) => set("reason", e.target.value)}
         />
-
-        {errors.reason && (
-          <span className="field-error">{errors.reason}</span>
-        )}
+        {errors.reason && <span className="field-error">{errors.reason}</span>}
       </label>
 
       <label style={{ gridColumn: "1 / -1" }}>
         Attachment (PDF/JPG/PNG)
-
         <input
           type="file"
           accept=".pdf,.jpg,.jpeg,.png"
@@ -133,9 +117,7 @@ export default function ApplyLeave() {
           const up = await leaveService.uploadAttachment(file);
           attachmentUrl = up.attachmentUrl;
         } catch (_) {
-          setServerError(
-            "Attachment upload skipped (storage not configured).",
-          );
+          setServerError("Attachment upload skipped (storage not configured).");
         }
       }
 
