@@ -27,5 +27,5 @@ jobs:
             - name: Upload eslint report
               uses: actions/upload-artifact@v4
               with: 
-                name: eslint-report${{ github.workflow}}
-                path: eslint-report${{ github.workflow_sha }}
+                name: eslint-report${{ github.workflow_sha}}
+                path: eslint-report${{ github.workflow }}
