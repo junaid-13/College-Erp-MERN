@@ -26,7 +26,7 @@ jobs:
                 npx eslint . -f json -o eslint-report.json
 
             - name: Upload eslint report
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v6
               with: 
                 name: eslint-report${{ github.workflow_sha}}
                 path: eslint-report${{ github.workflow }}
