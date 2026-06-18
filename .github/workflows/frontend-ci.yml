@@ -1,13 +1,12 @@
 name: CI-feature
 on:
-    push:
-        branches:
-            - 'feat/**'
+  push:
+    branches:
+      - "feat/**"
 jobs:
-    Linting:
-        runs-on: ubuntu-latest
-
-        steps:
+  Linting:
+    runs-on: ubuntu-latest
+    steps:
             - name: Checkout code
               uses: actions/checkout@v5
               with:
