@@ -27,7 +27,6 @@ import reactHooks from "eslint-plugin-react-hooks";
 import pluginSecurity from "eslint-plugin-security";
 import sonarjs from "eslint-plugin-sonarjs";
 import unicorn from "eslint-plugin-unicorn";
-import eslintPluginYml from "eslint-plugin-yml";
 import globals from "globals";
 
 export default defineConfig([
