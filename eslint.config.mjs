@@ -21,10 +21,10 @@ import { defineConfig } from "eslint/config";
 import pluginImport from "eslint-plugin-import";
 import pluginPromise from "eslint-plugin-promise";
 import pluginReact from "eslint-plugin-react";
-import unicorn from "eslint-plugin-unicorn";
-import eslintPluginYml from "eslint-plugin-yml";
 import reactHooks from "eslint-plugin-react-hooks";
 import sonarjs from "eslint-plugin-sonarjs";
+import unicorn from "eslint-plugin-unicorn";
+import eslintPluginYml from "eslint-plugin-yml";
 import globals from "globals";
 
 export default defineConfig([
