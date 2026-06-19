@@ -77,3 +77,21 @@ jobs:
 
       - name: Check formatting
         run: npx prettier . --check
+
+  Secret-Scanning:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Run git-leaks
+        uses: gitleaks/gitleaks-action@v3
+
+      - name: Upload Gitleaks Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-report-${{ github.run_id }}
+          path: gitleaks-report-${{ github.run_id }}.json
