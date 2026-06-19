@@ -17,10 +17,14 @@
 // This keeps the build green while still reporting every smell.
 
 import js from "@eslint/js";
+import configPrettier from "eslint-config-prettier";
 import { defineConfig } from "eslint/config";
 import pluginImport from "eslint-plugin-import";
+import pluginNoUnsanitized from "eslint-plugin-no-unsanitized";
 import pluginPromise from "eslint-plugin-promise";
 import pluginReact from "eslint-plugin-react";
+import pluginSecurity from "eslint-plugin-security";
+import eslintPluginYml from "eslint-plugin-yml";
 import reactHooks from "eslint-plugin-react-hooks";
 import sonarjs from "eslint-plugin-sonarjs";
 import unicorn from "eslint-plugin-unicorn";
@@ -57,8 +61,8 @@ export default defineConfig([
       unicorn,
     },
     // ESLint's recommended ruleset (turns on the core correctness rules such as
-    // no-dupe-keys, no-undef, etc.). NOTE: this does NOT include Prettier
-    // formatting disables - there is no eslint-config-prettier in this config.
+    // no-dupe-keys, no-undef, etc.). Prettier formatting disables are applied by
+    // the final eslint-config-prettier block (block 6) at the bottom of this file.
     extends: ["js/recommended"],
     settings: {
       // Let eslint-plugin-import resolve Node-style paths for import/order grouping.
@@ -150,6 +154,17 @@ export default defineConfig([
           ignoreRestSiblings: true, // `const { drop, ...keep } = obj` to strip a field
         },
       ],
+
+      // === (9) CORE SECURITY - arbitrary-code-exec / injection footguns =======
+      // These ship with core ESLint (no plugin needed) but are NOT in
+      // js/recommended. They are cheap, near-zero-false-positive, and block the
+      // most direct code-injection vectors - so they are hard errors repo-wide.
+      "no-eval": "error", // eval() = arbitrary code execution
+      "no-implied-eval": "error", // setTimeout("code"), new Function via string, etc.
+      "no-new-func": "error", // `new Function(str)` is eval by another name
+      "no-script-url": "error", // `javascript:` URLs execute as code
+      "no-proto": "error", // __proto__ access -> prototype-pollution vector
+      "no-extend-native": "error", // mutating built-in prototypes = gadget surface
     },
   },
 
@@ -168,6 +183,24 @@ export default defineConfig([
   },
 
   // ---------------------------------------------------------------------------
+  // 2b. Backend security - eslint-plugin-security (Node/Express heuristics).
+  //     Detectors are HEURISTIC and noisy (any non-literal fs/regex/require is
+  //     flagged), so the recommended set runs at "warn" to surface-and-triage
+  //     rather than block CI. The unambiguous code-exec detectors are then
+  //     promoted to "error" since a true positive there is a real RCE/injection.
+  // ---------------------------------------------------------------------------
+  {
+    files: ["backend/**/*.js", "shared/**/*.js"],
+    plugins: { security: pluginSecurity },
+    rules: {
+      ...pluginSecurity.configs.recommended.rules,
+      "security/detect-eval-with-expression": "error", // eval(userInput) = RCE
+      "security/detect-child-process": "error", // exec(`cmd ${x}`) = command injection
+      "security/detect-non-literal-require": "error", // require(var) = arbitrary module load
+    },
+  },
+
+  // ---------------------------------------------------------------------------
   // 3. Frontend portals - ESM, React 18 + JSX, browser runtime.
   // ---------------------------------------------------------------------------
   {
@@ -181,10 +214,20 @@ export default defineConfig([
     plugins: {
       react: pluginReact,
       "react-hooks": reactHooks,
+      "no-unsanitized": pluginNoUnsanitized,
     },
     rules: {
       // Start from the React recommended preset (keeps react/jsx-uses-vars etc.)
       ...pluginReact.configs.flat.recommended.rules,
+
+      // === FRONTEND SECURITY (XSS surface) ===================================
+      // react-plugin rules (already installed) - cost-free XSS hardening.
+      "react/no-danger": "warn", // dangerouslySetInnerHTML - audit each use
+      "react/jsx-no-target-blank": "error", // target=_blank needs rel=noreferrer (reverse tabnabbing)
+      "react/jsx-no-script-url": "error", // href="javascript:..." in JSX = code exec
+      // no-unsanitized - flags unsafe DOM sinks (innerHTML, insertAdjacentHTML).
+      "no-unsanitized/method": "error",
+      "no-unsanitized/property": "error",
       "react/react-in-jsx-scope": "off", // React 17+/Vite automatic JSX runtime - no import React needed
       "react/jsx-uses-react": "off", // same reason - the runtime references React for us
       "react/prop-types": "off", // project does not use the prop-types library
@@ -252,4 +295,12 @@ export default defineConfig([
       "yml/flow-mapping-curly-newline": "error",
     },
   },
+
+  // ---------------------------------------------------------------------------
+  // 6. Prettier compatibility - MUST be last. Turns off every ESLint rule that
+  //    would fight Prettier's formatting (the file header noted this config
+  //    previously had no eslint-config-prettier). Pure formatting disables only;
+  //    it does not touch the correctness/security rules above.
+  // ---------------------------------------------------------------------------
+  configPrettier,
 ]);
