@@ -90,13 +90,6 @@ jobs:
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v3
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
           GITLEAKS_ENABLE_SUMMARY: true
-
-      - name: Upload Gitleaks Report
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: gitleaks-report-${{ github.run_id }}
-          path: gitleaks-report-${{ github.run_id }}.json
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: true
