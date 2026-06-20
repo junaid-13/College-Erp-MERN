@@ -87,7 +87,7 @@ jobs:
           token: ${{ secrets.MERN_ERP_TOKEN }}
           fetch-depth: 0
 
-      - name: Run git-leaks
+      - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
