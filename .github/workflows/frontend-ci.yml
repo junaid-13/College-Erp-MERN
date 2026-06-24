@@ -10,6 +10,18 @@ on:
       - dev
 
 jobs:
+  Finding-the-differenece:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          token: ${{secrets.MERN_ERP_TOKEN}}
+          fetch-depth: 0
+      - name: Show changed files
+        run: |
+          git diff --name-only ${{github.event.before}} ${{github.sha}}
+
   Linting:
     runs-on: ubuntu-latest
 
