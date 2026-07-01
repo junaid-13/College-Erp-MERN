@@ -166,6 +166,8 @@ jobs:
         run: |
           echo "Frontend changes detected"
           npx vitest --run --coverage
+          ls -la coverage
+          cat coverage/coverage-final.json
 
       - name: Run Backend Unit Tests
         if: needs.Finding-the-differenece.outputs.backend_changed == 'true'

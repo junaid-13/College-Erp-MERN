@@ -17,7 +17,6 @@ export default function RoleGuard({ allow = [], children }) {
   if (loading) return <p style={{ textAlign: "center" }}>Loading…</p>;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   if (!allow.includes(user.role)) {
-    return <Navigate to="/unauthorized" replace />;
   }
 }
 */
