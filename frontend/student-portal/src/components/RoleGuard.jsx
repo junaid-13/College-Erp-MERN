@@ -19,7 +19,6 @@ export default function RoleGuard({ allow = [], children }) {
   if (!allow.includes(user.role)) {
     return <Navigate to="/unauthorized" replace />;
   }
-  return children ? children : <Outlet />;
 }
 */
 
