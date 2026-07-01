@@ -151,7 +151,7 @@ jobs:
       - name: Install dependencies college-erp-test
         working-directory: erp-test
         run: |
-          npm ci
+          npm install
 
       - name: Run Frontend Unit Tests
         if: needs.Finding-the-differenece.outputs.frontend_changed == 'true'
