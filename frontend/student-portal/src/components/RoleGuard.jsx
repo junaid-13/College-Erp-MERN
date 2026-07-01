@@ -10,7 +10,8 @@ import { useAuth } from "../context/AuthContext";
  *   <Route element={<RoleGuard allow={['HOD']} />}>...</Route>
  *
  * Unauthorized roles are redirected to /unauthorized.
- 
+ * Unauthorized roles are redirected to /unauthorized.
+
 */
 
 export default function RoleGuard({ allow = [], children }) {
